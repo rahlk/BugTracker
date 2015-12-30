@@ -1,0 +1,14 @@
+Release Notes of Apache Ant 1.9.6
+Changes from Ant 1.9.5 TO Ant 1.9.6
+===================================
+Changes that could break older environments:
+-------------------------------------------
+Fixed bugs:
+-----------
+* ArrayIndexOutOfBoundsException when ZIP extra fields are read and
+the entry contains an UnparseableExtraField.
+https://issues.apache.org/jira/browse/COMPRESS-317
+Other changes:
+--------------
+* Hidden <javaconstant> resource is published now. It reads the
+value of a specified java constant.

@@ -1,0 +1,103 @@
+Changes from Ant 1.8.4 TO Ant 1.9.0
+===================================
+Changes that could break older environments:
+-------------------------------------------
+* Ant now requires at least Java 1.5 to compile and to run
+* FixCRLF used to treat the EOL value ASIS to convert to the system property
+line.separator. Specified was that ASIS would leave the EOL characters alone,
+the task now really leaves the EOL characters alone. This also implies that
+EOL ASIS will not insert a newline even if fixlast is set to true.
+Bugzilla report 53036
+* The CommandLauncher hierarchy that used to be a set of inner
+classes of Execute has been extracted to the
+org.apache.tools.ant.taskdefs.launcher package.
+* Any FileResource whose represented File has a parent also has a basedir.
+* Removing the Perforce Ant tasks replaced by tasks supplied by Perforce Inc.
+* Setting the default encoding of StringResource to UTF-8 instead of null
+* Upgrade JUnit 4 to JUnit 4.11
+Fixed bugs:
+-----------
+* Made VectorSet faster.
+Bugzilla Report 53622.
+* Incorrect URLs in Ant child POMs.
+Bugzilla Report 53617.
+* Subclasses of JUnitTask did not correctly find junit.jar.
+Bugzilla Report 53571.
+* External XML catalog resolver failed to use project basedir when given an
+unmentioned relative path like the internal resolver does.
+Bugzilla Report 52754.
+* Fixed some potential stream leaks.
+Bugzilla Reports 52738, 52740, 52742, 52743.
+* Updated documentation to fix spelling errors / broken links.
+Bugzilla Reports 53215, 53291, 53202
+* Unable to override system properties. It was not possible not to override
+system properties from the command line (or from a property file).
+Bugzilla Report 51792
+* <javac> by default fails when run on JDK 8.
+Bugzilla Report 53347.
+* ExtensionPoint doesn't work with nested import/include
+Bugzilla Report 53405.
+* <packagemapper> failed to strip the non-matched parts with
+handledirsep="true".
+Bugzilla Report 53399.
+* <expandproperties> filter caused a NullPointerExcpetion when input
+was empty.
+Bugzilla Report 53626.
+* <get> now supports HTTP redirects using status code 307.
+Bugzilla Report 54374.
+* ssh tasks prompt for kerberos username/password under Java 7
+Bugzilla Report 53437.
+* Zip task on <mappedresources> that excludes certain files by way of the mapper resulted in a NullPointerException
+Bugzilla Report 54026
+* The ant launcher script should properly detect JAVA_HOME on
+MacOS X 10.7
+Bugzilla Report 52632
+* Depend task does not handle invokeDynamic constant pool entries - java.lang.ClassFormatError: Invalid Constant Pool entry Type 18
+Bugzilla Report 54090
+* Base64Converter not properly handling bytes with MSB set (not masking byte to int conversion)
+Bugzilla Report 54460
+* The size resource comparator would return wrong results if file
+sizes differed by more than 2 GB.
+Bugzilla Report 54623
+* Unable to encode properly into UTF-8 when the system property file.encoding is
+set to ANSI_X3.4-1968.
+Bugzilla Report 54606
+* JUnit4 tests marked @Ignore do not appear in XML output
+Bugzilla Report 43969
+Other changes:
+--------------
+* merged the ZIP package from Commons Compress, it can now read
+archives using Zip64 extensions (files and archives bigger that 4GB
+and with more that 64k entries).
+* a new task <commandlaucher> can be used to configure the
+CommandLauncher used by Ant when forking external programs or new
+Java VMs.
+Bugzilla Report 52706.
+* merged the TAR package from Commons Compress, it can now read
+archives using POSIX extension headers and STAR extensions.
+* merged the BZIP2 package from Commons Compress, it can now
+optionally read files that contain multiple streams properly.
+* <bunzip2> will now properly expand files created by pbzip2 and
+similar tools that create files with multiple bzip2 streams.
+* <tar> now supports a new "posix" option for longfile-mode which
+will make it create PAX extension headers for long file names.
+PAX
+extension headers are supported by all modern implementations of
+tar including GNU tar.
+This option should now be used in preference to "warn" or "gnu" as
+it is more portable.
+For backwards compatibility reasons "warn"
+will still create "gnu" extensions rather than "posix" extensions.
+* The ProjectHelper class now exposes a method to be used by third party
+implementations to properly resolve the binding between target extensions
+and extension points.
+Bugzilla Report 53549.
+* Make extension point bindable to imported prefixed targets
+Bugzilla Report 53550.
+* Add the possibility to register a custom command line argument processor.
+See org.apache.tools.ant.ArgumentProcessor and manual/argumentprocessor.html
+* add the possibility to suppress stdout in the sshexec task.
+Bugzilla Report 50270.
+* add an encoding attribute to the contains selector.
+This will be useful to use the contains selector if the encoding of the VM is different from the encoding
+of the files being selected.

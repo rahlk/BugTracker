@@ -1,0 +1,145 @@
+Changes from Ant 1.8.2 TO Ant 1.8.3
+===================================
+Changes that could break older environments:
+-------------------------------------------
+* The Enumeration returned by AntClassLoader#getResources used to
+return null in nextElement after hasNextElement would return false.
+It has been changed to throw a NoSuchElementException instead so
+that it now adheres to the contract of java.util.Enumeration.
+Bugzilla Report 51579.
+Fixed bugs:
+-----------
+* Removed buggy duplicate JAR list in RPM mode.
+Bugzilla Report 52556.
+* Launcher fixed to pass the right class loader parent.
+Bugzilla Report 48633.
+* <junitreport> mishandled ${line.separator}.
+Bugzilla Report 51049.
+* <junitreport> did not work in embedded environments on JDK 7.
+Nor did <xslt> when using Xalan redirects.
+Bugzilla Report 51668, 52382.
+* Encoding of unicode escape sequences by the property file task
+Bugzilla Report 50515.
+* The code that implicitly sets the -source switch if only -target
+has been specified in <javac> was broken for Java 5 and 6.
+Bugzilla Report 50578.
+* MailLogger ignore the Maillogger.starttls.enable property.
+Bugzilla Report 50668.
+* Delete task example does not work
+Bugzilla Report 50816.
+* <splash>'s proxy handling has been delegated to <setproxy>
+internally so the two tasks are consistent.
+<splash>'s way of not
+setting a proxy caused problems with other Java libraries.
+Bugzilla Report 50888.
+* Include task breaks dependencies or extension-points for multiple
+files.
+Bugzilla Report 50866.
+* Read on System.in hangs for forked java task.
+Bugzilla Report 50960.
+* FileResource specified using basedir/name attributes was non-functional.
+* Resource collection implementation of mapped PropertySet returned
+unusable resources.
+* The hasmethod condition failed with a NullPointerException when
+ignoresystemclasses is true and Ant tried to load a "restricted
+class" - i.e. a class that the Java VM will only accept when loaded
+via the bootclassloader (a java.* class).
+It will now fail with a more useful error message.
+Bugzilla Report 51035.
+* Exec task may mix the stderr and stdout output while logging it
+Bugzilla Report 50507.
+* Missing space between "finished" and timestamp in task/target
+finish message from ProfileLogger.
+Bugzilla Report 51109.
+* Redirecting the output of a java, exec or apply task could print in the
+error output stream some "Pipe broken" errors.
+Bugzilla Report 48789.
+* ZipFile failed to clean up some resources which could lead to
+OutOfMemoryException while unzipping large archives.
+A similar problem in ZipArchiveOutputStream has been fixed as well.
+Bugzilla Report 42696.
+* quiet attribute added to the copy and move tasks, to be used together
+with failonerror=false, so warnings won't get logged
+Bugzilla Report 48789.
+* System.in was closed and not readable anymore by the DefaultInputHandler
+when Ant is used via its Java API.
+Bugzilla Report 51161
+* <sync> only supported a single non-fileset resource collection even
+though the manual said it could be multiple.
+* <sync> didn't work properly when working on resource collections.
+Bugzilla Report 51462.
+* <augment> cause a NullPointerException if it was used in a target
+that was invoked by multiple targets from the command line.
+Bugzilla Report 50894.
+* The ZipFile class could read past the start of the file if the
+given file is not a ZIP archive and it is smaller than the size of
+a ZIP "end of central directory record".
+* <javac> would create the empty package-info.class file in the wrong
+directory if no destdir was specified.
+Note it may still pick the
+wrong directory if you specify more than one source directory but
+no destDir.
+It is highly recommended that you always explicitly
+specify the destDir attribute.
+Bugzilla Report 51947.
+* packagemapper now honors the handleDirSep attribute.
+Bugzilla Report 51086.
+* the attributes of macrodef tasks had their values run through
+property expansion twice. Still true by default, but can be disabled.
+Bugzilla Report 42046.
+* jvc doesn't like it if source file names in argument files are
+quoted.
+Bugzilla Report 31667.
+* ZipFile didn't work properly for archives using unicode extra
+fields rather than UTF-8 filenames and the EFS-Flag.
+* Access to DirectoryScanner's default excludes wasn't synchronized.
+Bugzilla Report 52188.
+* When a Project instance was created by a custom tasks its
+createTask method didn't work.
+Bugzilla Report 50788.
+Other changes:
+--------------
+* -f/-file/-buildfile accepts a directory containing build.xml.
+* The <javacc>, <jjtree> and <jjdoc> now support a new maxmemory
+attribute.
+Bugzilla Report 50513.
+* the documented inputstring attribute of sshexec has been
+implemented and the actually existing attribute inputproperty
+documented.
+Bugzilla Report 50576.
+* The concat task now permits the name of its exposed resource
+by means of its 'resourcename' attribute.
+* The expandproperties filter now accepts a nested propertyset
+which, if specified, provides the properties for expansion.
+Bugzilla Report 51044.
+* <junit filtertrace="true"/> will no longer filter out the very
+first line of the stacktrace containing the original exception
+message even if it matches one of the filter expressions.
+* Upgraded to Apache AntUnit 1.2
+* Provide read access to Mkdir.dir.
+Bugzilla Report 51684.
+* <delete> and <move> have a new attribute performGCOnFailedDelete
+that may - when set to true - help resolve some problems with
+deleting empty directories on NFS shares.
+Bugzilla Report 45786.
+* <loadfile> and <loadresource> used to log at level INFO to signal a
+property hasn't been set when the resource was empty even if the
+quiet attribute was set to true.
+They will now use VERBOSE
+instead.
+Bugzilla Report 52107.
+* <javac> has a new attribute createMissingPackageInfoClass that can
+be set to false to prevent Ant from creating empty dummy classes
+used for up-to-date-ness checks.
+Bugzilla Report 52096.
+* URLResources#isExists has become less noisy.
+Bugzilla Report 51829.
+* The <retry> task has a new optional attribute retryDelay that can
+be used to make the task sleep between retry attempts.
+Bugzilla Report 52076.
+* <signjar> has new attributes that control the signature and digest
+algorithms.
+Bugzilla Report 52344.
+* Initial support for Java 8.
+* <sshexec> can optionally create a pseudo terminal (like ssh -t)
+Bugzilla Report 52554.

@@ -1,0 +1,35 @@
+Release Notes of Apache Ant 1.9.3
+Changes from Ant 1.9.2 TO Ant 1.9.3
+===================================
+Changes that could break older environments:
+-------------------------------------------
+Fixed bugs:
+-----------
+* <parallel> swallowed the status code of nested <fail> tasks.
+Bugzilla Report 55539.
+* a race condition could make <fixcrlf> tasks of parallel builds to
+interfere with each other.
+Bugzilla Report 54393.
+* <mail>'s mailport still didn't work properly when using smtps.
+Bugzilla Report 49267.
+* using attributes belonging to the if and unless namespaces
+made macrodef fail.
+Bugzilla Report 55885.
+* Ant 1.8 exec task changes have slowed exec to a crawl
+Bugzilla Report 54128.
+* Apt is not available under JDK 1.8
+Bugzilla Report 55922.
+Other changes:
+--------------
+* Documentation fix for if/unless attributes.
+PR 55359.
+* tar entries with long link names are now handled the same way as
+entries with long names.
+* Addition of 'skipNonTests' attribute to <junit> and <batchtest>
+tasks to allow the tasks to skip classes that don't contain tests.
+* <filterset> now supports a nested <propertyset> to specify filters.
+Bugzilla Report 55794.
+* <xslt>'s params can now be typed.
+Bugzilla Report 21525.
+* build of Mac OS X pkg installer
+Bugzilla Report 55899.

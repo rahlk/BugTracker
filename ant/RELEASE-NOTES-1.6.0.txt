@@ -1,0 +1,506 @@
+Changes from Ant 1.5.4 to Ant 1.6
+Changes that could break older environments:
+This version of Ant can not be built with JDK 1.1 and requires at
+least Java 1.2 at runtime as well.
+Compiling for a 1.1 target is
+still supported.
+Targets cannot have the empty string as their name any longer.
+ant.jar's manifest does no longer include a Class-Path entry, so it
+is no longer possible to run Ant via "java -jar ant.jar" without
+manually altering the CLASSPATH.
+Instead of that a file
+ant-bootstrap.jar is included in the etc directory of the binary
+distribution, copy this to the lib directory and use
+"java -jar ant-bootstrap.jar" instead if you want to run Ant without
+the wrapper script (not recommended).
+The <script> task now requires Apache BSF instead of the older IBM
+version.
+See <http://jakarta.apache.org/bsf/>
+<xmlproperty> will no longer fail if the file to be loaded doesn't exist.
+XML namespaces are now enabled in the XML parser, meaning XML namespace
+declarations no longer cause errors. However task names containing colons
+will cause errors unless there is a corresponding namespace uri.
+The <ftp> and <telnet> tasks now require Jakarta Commons Net instead
+of the older ORO Netcomponents version.
+See
+<http://jakarta.apache.org/commons/net/index.html>.
+<input> will no longer prompt the user and wait for input if the
+addproperty attribute is set to a property that has already been
+defined in the project.
+If you rely on the task waiting for input,
+don't use the addproperty attribute.
+The Class-Path attribute in manifests will no longer merge the
+entries of all manifests found, but will be treated like all other
+manifest attributes - the most recent attribute(s) will be used.
+New Launch mechanism implemented. This moves some functionality from
+the batch files / shell scripts into Java. This removes environment
+limitations, for command issues, directory depth issues on Windows. Also
+allows a per-user library location to be used if the main Ant install
+is locked down.
+The Entry nested element of PropertyFile will not any more have its value
+attribute (actually increment) overwritten with the new value of the entry
+after execution.
+Output stored from a <java> or <exec> task is now exactly as generated. No
+conversion to platform end-of-line characters is performed.
+<translate> will now preserve line endings.
+<ftp> followsymlinks="false" in nested fileset definitions is explicitly
+required in order to exclude remote symbolic links (when doing a get, chmod,
+delete, rmdir).
+The values of the Copy#fileCopyMap variable has changed from String to
+String[]. (In java 1.5 terms it was Hashtable<String, String> and
+is now Hashtable<String, String[]>). This will affect third party code
+that extend Copy and override Copy#doFileOperations.
+<loadproperties> didn't expand properties while <property file="..."/>
+does, so they were not equivalent.
+This has been fixed, which means
+that propetries may get expanded twice if you use an
+<expandproperties> filterreader.
+Bugzilla Report 17782.
+User defined tasks and typedefs are now handled internally in the
+same way as predefined tasks and typedefs. Also tasks and typedefs
+are resolved at a later stage. This causes some
+differences especially for user defined task containers.
+<checksum> log message "Calculating checksum ..." has been degraded from INFO to VERBOSE.
+Fixed bugs:
+Filter readers were not handling line endings properly.
+Bugzilla
+Report 18476.
+Filtersets were also not handling line endings properly.
+Expand tasks did not behave as expected with PatternSets.
+<property environment=... /> now works on OS/400.
+<cab> could hang listcab on large <fileset>s.
+The starteam stcheckout, stcheckin tasks now correctly compute
+status of files against whatever local tree they are run against
+and, optionally, will not process a file if it is current.
+Previously you had to process everything unless you ran against the
+default folder which wasn't the normal use-case for ant-starteam.
+The stlist task now similarly displays that status correctly making
+it a more generally useful tool.
+entity includes would cause exceptions if path names included spaces.
+addConfiguredXXX would not work for TaskAdapter wrapped tasks
+Fix <ilasm> outputfile testing so that the output file does not need
+to exist beforehand.
+Ant will now exit with a return code of 1 if it encounters problems
+with the command line arguments.
+ClassLoader creation changes to use a factory method in Project. A new
+class AntClassLoader2 implemented for 1.2+ specific features including
+Package information and addition of classes specified in the Class-Path
+element of a Jar's manifest.
+It is now possible in <exec> to resolve the executable to a project
+basedir or execution dir relative executable. The resolveExecutable
+must be used to pick up such executables.
+splash screen wouldn't disappear when build was finished.
+<exec> output and error streams can now be redirected independently
+to either a property or a file (or both)
+TarEntry's File-arg constructor would fail with a
+StringIndexOutOfBoundsException on all OSes where os.name is shorter
+than seven characters.
+Bugzilla Report 18105.
+<copy> and <move>'s failonerror didn't apply to filesets pointing to
+non-existant directories.
+Bugzilla Report 18414.
+The <stripjavacomments> filter sometimes removed parts of string
+constants.
+Bugzilla Report 17441.
+<antlr> will now recompile your grammar if the supergrammar has
+changed.
+Bugzilla Report 12691.
+<property env> will now work on Unices with /bin/env instead of
+/usr/bin/env.
+Bugzilla Report 17642.
+<jar index="on"> could include multiple index lists.
+Bugzilla 10262.
+The index created by <jar> didn't conform to the spec as it didn't
+include the top-level entries.
+Bugzilla Report 16972.
+<tar> and <zip> didn't honor the defaultexcludes attribute for the
+implicit fileset.
+Bugzilla Report 18637.
+The <replacetokens> filter would throw an exception if the token's
+value was an empty string.
+Bugzilla Report 18625.
+Perforce tasks relying on output from the server such as <p4change>
+and <p4label> were hanging. Bugzilla Reports 18129 and 18956.
+Improve exception and logging behavior of Perforce tasks.
+Bugzilla report 18154.
+build.sh install had a problem on cygwin (with REALANTHOME).
+Bugzilla Report 17257
+<replaceregexp> didn't work for multi-byte encodings if byline was false.
+Bugzilla Report 19187.
+<replaceregexp> was altering unnecessarily the timestamp of the directories
+containing the files to process
+Bugzilla Report 22541.
+file names that include spaces need to be quoted inside the @argfile
+argument using forked <javac> and (all JDKS).
+Bugzilla Report 10499.
+NB : a first correction was only introducing quotes for JDK 1.4
+It has been changed to quote for all external compilers when paths
+contain spaces.
+Also the backslashes need to be converted to forward slashes
+Bugzilla Report 17683.
+Setting filesonly to true in <zip> and related tasks would cause the
+archives to be always recreated.
+Bugzilla Report 19449.
+file names that include spaces need to be quoted inside the @argfile
+argument using <javadoc> and JDK 1.4.
+Bugzilla Report 16871.
+<junit> didn't work with custom formatters that were only available
+on the user specified classpath when a timeout occured.
+Bugzilla
+Report 19953.
+<different> selector : make ignoreFileTimes effectively default to true
+and fix a bug in the comparison of timestamps. Bugzilla Report 20205.
+<different> selector can now be nested directly under a fileset
+Bugzilla Report 20220.
+<cvstagdiff> had a problem with "dd-MM-yy hh:mm:ss" formats
+Bugzilla Report 15995.
+<cvstagdiff> cvsroot and package attributes added to the root
+element tagdiff of the xml output
+Bugzilla Report 16081.
+<cvstagdiff> had a problem with aliased modules and with requests for multiple modules
+Bugzilla Reports 21373 and 22877.
+<cvstagdiff> could not parse properly the revision number of new files with CVS 1.11.9 or higher
+Bugzilla Report 24406.
+<fixcrlf> make fixcrlf create its temporary files in the default directory
+of FileUtils#createTempFile instead of the destination dir of fixcrlf.
+Bugzilla Report 20870.
+<ejbjar> implementation for Borland.
+Prevent the task from being blocked by error messages coming from java2iiop.
+Bugzilla Report 19385.
+<unzip>'s and <untar>'s nested patternsets didn't work as documented
+when the pattern ended in a slash or backslash.
+Bugzilla Report 20969.
+<fixcrlf> will now create the parent directories for the destination
+files if necessary.
+Bugzilla Report 20840.
+<xmlproperty> now handles CDATA sections. BugZilla Report 17195
+<translate> now translate tokens that are placed close together.
+Bugzilla Report 17297
+Nested websphere element for ejbjar does not support spaces in file name.
+Bugzilla Report 21298
+Don't multiply Class-Path attributes when updating jars.
+Bugzilla
+Report 21170.
+Do not overwrite the value (increment) attribute of PropertyFile nested Entry element.
+Bugzilla Report 21505.
+Prevent sysproperties with no key or no value from being added in <junit>.
+Bugzilla Report 21684.
+Allow references to be properly inherited via antcall
+Bugzilla Report 21724.
+ftp chmod failed when the remote system was UNIX and local system Windows
+Bugzilla Report 21865.
+ftp put with chmod failed when the remote system was UNIX and local system Windows
+Bugzilla Report 23143.
+ftp did not set the ascii mode explicity, causing problems with ftp servers
+having binary as default
+ftp was not able to download files when they were pointed to by symbolic links
+Bugzilla Report 14063.
+ftp is able to download also directories pointed to by symbolic links.
+replace would change \r\n into \r\r\n under Windows.
+junitreport with frames did not display a link for classes without a package
+or in the top package.
+Bugzilla Report 21915.
+Project.toBoolean(String) now handles null as argument and does not throw a
+NullPointerException any more.
+The socket condition will now close the socket created to test.
+Bugzilla Report 23040.
+<junit includeantruntime="true" fork="true"> replaced the CLASSPATH instead
+of adding to it.
+Bugzilla Report 14971.
+<splash> could fail on JVMs that use null to indicate the system classloader.
+Bugzilla Report 23320.
+<xmlcatalog>s only worked when defined inside of tasks.
+Bugzilla
+Report 20965.
+<csc> and siblings (<vbc> <jsharpc>) handle large filesets by
+automatic use of response files.
+Bugzilla report #19630
+Other changes:
+Shipped XML parser is now Xerces 2.6.0
+All tasks can be used outside of <target>s.
+Note that some tasks
+will not work at all outside of targets as they would cause infinite
+loops (<antcall> as well as <ant> and <subant> if they invoke the
+current build file).
+Six new Clearcase tasks added.
+A new filter reader namely tokenfilter has been added.
+Bugzilla
+Report 18312.
+A new attribute named skip is added to the TailFilter and
+HeadFilter filter readers.
+The filesetmanifest attribute of <jar> has been reenabled.
+The start and end tokens for <translate> may now be longer than a
+single character.
+<setproxy> lets you set the username and password for proxies that
+want authentication
+<loadproperties> has a new encoding attribute.
+<echoproperties> can now create XML output.
+<echoproperties> has a new srcfile attribute that can make it read
+properties files and output them instead of Ant's properties.
+<filterset> will now resolve filters recursively.
+<input> has a new attribute that allows you to specify a default value.
+Added <image> task (requires JAI).
+<image> task has now proportions attribute in the <scale/> nested element
+instead of keepproportions (bringing in more functionality)
+New condition <isreference>
+<ftp> now has a preservelastmodified attribute to preserve the
+timestamp of a downloaded file.
+new rmdir action for <ftp> that removes directories from a fileset.
+<ftp> has attributes timediffauto and timediffmillis to use together
+with the newer attribute to tell ant to take into account a time difference
+between client and remote side.
+Bugzilla Report 19358.
+<ftp> has been optimized to go directly to the include patterns.
+This reduces scanning time under UNIX when followsymlinks="true"
+and casesensitive="true" (the default)
+Bugzilla Report 20103.
+The SOS and VSS tasks will no longer unconditionally prepend a $ to
+vsspath or projectpath.
+OS/400 now gets detected by the os condition.
+<arg> has a new attribute pathref that can be used to reference
+previously defined paths.
+<xmlproperty> has been improved, you can now expand ${properties},
+define ids or paths and use Ant's location magic for filename resolutions
+in the XML file.
+<xmlcatalog> will now support external catalogs according to the
+OASIS "Open Catalog" standard - if resolver.jar (newer than version
+1.0) from Apache's xml-commons is in your CLASSPATH.
+Starteam tasks now have support for revision labels and build labels.
+Checkouts now have the option of using repository timestamps, instead
+of current.
+new task <symlink> that creates and maintains symbolic links.
+new tasks <chown> and <chgrp> which are wrappers of the Unix commands.
+new task <attrib> to change file attributes on Windows systems.
+<style> has a new attribute reloadstylesheet to work around a
+bug in widespread Xalan versions.
+<tarfileset> has a new dirmode attribute to specify the permissions
+for directories.
+<fixcrlf>'s eol attribute now also understands "mac", "unix" and "dos".
+<classfileset> now picks up dependencies of the form MyClass.class. This
+works for the code generated by the Sun java compiler. It may not work for
+all compilers.
+a new attribute "globalopts" can be added to all Perforce tasks.
+You can put in it all the strings described by p4 help usage. Refer to
+the docs for more information.
+new Perforce tasks <p4integrate> , <p4resolve>, and <p4labelsync>
+<p4submit> will change the property p4.change if the Perforce server
+renumbers the change list.
+It will set the property p4.needsresolve if the submit fails,
+and the message says that file(s) need to be resolved.
+<replaceregexp> now has an optional encoding attribute to support
+replacing in files that are in a different encoding than the
+platform's default.
+The <exec> task may now have its input redirected from either a file
+or a string from the build file. The error output can be separated
+to a different file when outut is redirected. standard error may be
+logged to the Ant log when redirecting output to a file
+The <java> task also supports the input redirection and separate
+error streams introduced to the <exec> task. In addition, it is now
+possible to save the output into a property for use within the build
+file as was possible with <exec> in Ant 1.5
+The <javadoc> task <tag> subelement has been enhanced to allow files
+with tag mappings to be used.
+New tasks: <scp> supports file transfers, <sshexec> executes a
+command over SSH.
+They require jsch, a BSD licensed SSH library that
+can be found at http://www.jcraft.com/jsch/index.html
+New filterreader <escapeunicode/>.
+Support for HP's NonStop Kernel (Tandem) OS has been added.
+<cab>'s basedir attribute is now optional if you specify nested
+filesets.
+Bugzilla Report 18046.
+New task <sync> that synchronizes two directory trees.
+<apply> has new forwardslash attribute that can force filenames to
+use forward slashes (/) as file separators even on platforms with a
+different separator.
+This is useful if you want to run certain
+ported Unix tools.
+Copy has a new outputencoding attribute that can be used to change
+the encoding while copying files.
+Bugzilla Report 18217.
+The xml formatter for JUnit will now honor test case names set with
+setName.
+Bugzilla Report 17040.
+JUnit now has an attribute reloading, which, when set to false,
+makes the task reuse the same class loader for a series of tests.
+<concat> now supports filtering and can check timestamps before
+overriding a file.
+Bugzilla Report 18166.
+<junit> has a new attribute tempdir that controls the placement of
+temporary files.
+Bugzilla Report 15454.
+<jdepend> now supports a new nested element <classespath> which is
+the same as <sourcespath> but point to compiled classes (the
+prefered mode of operation for JDepend > 2.5).
+Additionally, nested
+<exclude> elements can be used to exclude certain packages from
+being parsed.
+Bugzilla Report 17134.
+The JProbe tasks now also work with JProbe 4.x.
+Bugzilla Report 14849.
+<javacc> and <jjtree> will now autodetect JavaCC 3.x and can use it.
+<sql> has a new attribute to control escape processing.
+<sql> is able to display properly several resultsets if you are
+running a compound sql statement. Bugzilla Report 21594.
+A new <containsregexp> selector has been added, that selects files
+if their content matches a certain regular expression.
+<antlr>'s debug attribute has been enabled.
+Bugzilla Report 19051.
+<mail> has a new attribute charset. Bugzilla Report 15434.
+<mail> has new attributes user and password for SMTP auth.
+maillogger can also use this.
+The implementation only works with JavaMail (encoding="MIME").
+Implementation with plain mail remains to do.
+Bugzilla Report 5969.
+<mail> and mailloger support SMTP over TLS/SSL
+Bugzilla Report 19180.
+<mail> the attributes from, replyto ,tolist, cclist, bcclist
+can now contain email addresses of the form name <address@xyz.com>
+or (name) address@xyz.com
+Bugzilla Report 22474.
+<mail> (version PlainMail)
+prevent blank headers from being sent,
+make the order of the headers of plain mail messages predictable
+Bugzilla Report 22088.
+<zipfileset> can now be defined in the main body of a project
+and referred to with refid="xyz". Bugzilla Report 17007.
+A wrapper script for OS/2 has been added.
+<unzip> will now detect and successfully extract self-extracting
+archives.
+Bugzilla Report 16213.
+<stcheckout> has a new attribute "converteol" that can be used to
+control the automatic line-end conversion performed on ASCII files.
+Bugzilla Report 18884.
+Users can now modify the list of default excludes using the new
+defaultexcludes task.
+Bugzilla Report 12700.
+There is a new data type <propertyset> that can be used to collect
+properties.
+It is supported by <ant>, <antcall>, <subant>, <java>,
+<echoproperties> and <junit>.
+<concat> can now control the encoding of the output as well and optionally
+add new-line characters at the end of files that get concatenated but
+don't end in newlines.
+Bugzilla Report 12511.
+<rpm> will detect the rpmbuild executable of RedHat 8.0 and newer
+and use that if it is on your PATH.
+Bugzilla Report 14650.
+A new task <rexec> has been added that requires commons-net to work.
+Bugzilla Report 19541.
+<javadoc> now supports a nested <arg> element in addition to the
+additionalparams attribute.
+You can now determine the order of standard tags in <javadoc> via
+<tag> elements - you must not use the description attribute for them.
+Bugzilla Report 18912.
+<javadoc> now supports the -noqualifier switch.
+Bugzilla Report 19288.
+<javac>'s executable attribute can now also be used to specify the
+executable for jikes, jvc, sj or gcj.
+Bugzilla Report 13814.
+<javac> has a new attribute tempdir that can control the placement
+of temporary files.
+Bugzilla Report 19765.
+A new magic property build.compiler.jvc.extensions/ has been added
+that can be used to turn of Microsoft extensions while using the jvc
+compiler.
+Bugzilla Report 19826.
+You can now limit the parallelism of <apply> and <chmod> by using the new
+maxparallel attribute.
+With the new addsourcefile attribute, you can make <apply> ommit the
+source file names from the command line.
+Bugzilla Report 13654.
+<apply> and <chmod> now support nested <filelist>s as well as <dirset>s.
+Bugzilla Reports 15929 and 20687.
+<apply> and <chmod> will display a summary if you set the new
+verbose attribute to true.
+Bugzilla Report 19883.
+<copy>/<move>'s failonerror attribute can now also be used to
+continue the build if an I/O error caused a problem.
+Bugzilla
+Report 12999.
+new selector <type/> allowing to select only files or only directories.
+Bugzilla Report 20222.
+<java> and <junit> now support a nested <bootclasspath> element that
+will be ignored if not forking a new VM.
+<junit>'s nested <formatter> elements now support if/unless clauses.
+<ejbjar>
+cmpversion attribute added
+jboss element will look for jbosscmp-jdbc.xml descriptor
+if ejbjar has cmpversion="2.0" set
+Bugzilla Reports 14707 and 14709.
+<pvcs> config attribute added to set the location of a specific PVCS
+.cfg file
+Bugzilla Report 9752
+<mapper> has an "unpackage" mapper
+Bugzilla Report 18908
+Added <scriptdef> task allowing tasks to be defined using any BSF-supported
+scripting language.
+<touch>'s datetime attribute can now accept time with a granularity
+of seconds as well.
+Bugzilla Report 21014.
+<checksum> has two new properties: totalproperty and todir.
+FileUtils#createTempFile will now create temporary files in the
+directory pointed to by the property java.io.tmpdir/
+<unzip> and friends now supports an optional encoding attribute to
+enable it to expand archives created with filenames using an encoding
+other than UTF8.
+Bugzilla Report 10504.
+<patch> has a new attribute destfile that can be used to create a new
+file instead of patching files in place.
+OpenVMS is detected as a valid OS family.
+DirectoryScanner has been optimized for cases where include patterns do not
+start with wildcards.
+Bugzilla Report 20103.
+DirectoryScanner begins to be optimized not to scan excluded directories.
+Bugzilla Report 21941.
+Added keep-going feature. Bugzilla Report 21144
+The archives generated by <zip> and friends will now contain CRC and
+size information in the "local file header", thereby providing this
+information to applications that read the archives using
+java.util.ZipInputStream/.
+Bugzilla Report 19195.
+<copy> and <move> can now handle mappers that return multiple
+mappings per source path. This behaviour is enabled by using
+an enablemultiplemapping attribute. Bugzilla Report 21320.
+<exec> will now work on OpenVMS (please read the notes in
+<exec>'s manual page).
+Bugzilla Report 21877.
+<exec> will now have a new attribute spawn (default false).
+If set to true, the process will be spawned. Bugzilla Report 5907.
+<java> will now have a new attribute spawn (default false).
+If set to true, the process will be spawned. Bugzilla Report 5907.
+<parallel> now supports a timeout which can be used to recover
+from deadlocks, etc in the parallel threads. <parallel> also
+now supports a <daemons> nested element. This can be used to
+run tasks in daemon threads which the parallel task will not
+wait for before completing. A new attribute failonany will cause
+<parallel> to throw an exception if any thread fails without
+waiting for all other threads to complete.
+<zip> and friends will consume far less memory than they used to
+when run with compress="false".
+Bugzilla Report 21899.
+<if/> and <unless/> attributes added to <param/> element of <style>
+Bugzilla Report 22044
+<zip> and friends have a new attribute "keepcompression" that can be
+used to incrementally build an archive mixing compressed and uncompressed
+entries.
+<junit>'s XML formatter adds a new classname attribute to the <testcase>
+elements.
+new <permissions> type add permission handling to the code
+this type can be nested in the <java> and <junit> tasks.
+Bugzilla Report 22533.
+additional shortcuts for ant options (-d --> -debug, -e --> -emacs,
+-h --> -help, -p --> -projecthelp, -s --> -find).
+new selector <modified>. "cache" was renamed to "modified".
+Bugzilla Report 20474.
+<stcheckout> and <stlist> have a new asofdate attribute that can be
+used to checkout/list files based on a date instead of a label.
+Bugzilla Report 20578.
+New filter <concatfilter>. Adds the content of file at the beginning
+or end of a file. Discussion started at
+http://marc.theaimsgroup.com/?l=ant-user&m=106366791228585&w=2
+New task <import>
+New task <macrodef>
+New task <presetdef>
+Ant libraries that can make use of namespaces to avoid name
+clashes of custom tasks

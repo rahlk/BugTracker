@@ -1,0 +1,111 @@
+Release Notes of Apache Ant 1.9.5
+Changes from Ant 1.9.4 TO Ant 1.9.5
+===================================
+Changes that could break older environments:
+-------------------------------------------
+* The ReplaceTokens filter can now use token-separators longer than
+one character.
+This means it can be used to replace mustache-style
+{{patterns}} and similar templates.
+This is going to break code
+that invokes the setters on ReplaceTokens via the Java API as their
+parameters have been changed from char to String.
+It may also
+break build files that specified multi character tokens and relied
+on Ant silently ignoring all but the first character.
+Bugzilla Report 56584
+* The changes that added <get>'s support for gzip encoding
+automatically uncompressed content that would not have been touched
+before - like when downloading .tar.gz files.
+A new flag has been
+added to control the behavior and its default will make <get> work
+as it did in 1.9.3.
+I.e. if you want it to work like 1.9.4
+you have to explicitly set tryGzipEncoding to true.
+Bugzilla Report 57048
+Fixed bugs:
+-----------
+* TarArchiveInputStream failed to read archives with empty gid/uid
+fields.
+Bugzilla Report 56641
+* TarArchiveInputStream could throw IOException when reading PAX
+headers from a "slow" InputStream.
+* XMLJunitResultFormatter could throw NullPointerException if Java
+cannot determine the local hostname.
+Bugzilla Report 56593
+* URLResource#getLastModified tried to access the connection to the
+URL without making sure it was established, potentially leading to
+a NullPointerException when using FTP.
+Bugzilla Report 56873
+* Long-Name and -link or PAX-header entries in TAR archives
+always had the current time as last modfication time, creating
+archives that are different at the byte level each time an
+archive was built.
+* runant.py should now work as well when the path of the Java executable
+contains spaces.
+github pull request #1
+* <junitreport> now supports nested <classpath> and <factory> elements.
+Bugzilla Report 47002
+* complete-ant-cmd.pl now also knows about the -file option.
+Bugzilla Report 57371
+* the br-replace template inside the XSLT stylesheets used by
+<junitreport> could cause stack overflows or out-of-memory errors
+when applied to big outputs.
+Bugzilla Report 57341
+* removed spurious warning about unclosed ZipFiles when reading the
+archive failed.
+Port of https://issues.apache.org/jira/browse/COMPRESS-297
+* FileUtils.rename which is used by several tasks can throw a
+NullPointerException if the "normal" renameTo operation fails and
+an exception occurs while rename falls back to copying and deleting
+the file.
+Bugzilla Report 57533
+* complete-ant-cmd.pl would incorrectly suggest words from the build
+file description.
+Bugzilla Report 51931
+* complete-ant-cmd.pl now also completes tasks without a description.
+Bugzilla Report 57542
+* LocalPropertyStack could run into ConcurrentModificationException
+when tasks spawned new child threads that accessed the properties.
+Bugzilla Report 55074
+* TarEntry's constructor with a File and a String arg didn't
+normalize the name.
+* Between 1.8.4 and 1.9.0 TarInputStream started to parse file
+names using the platform's default encoding rather than as ASCII.
+This has been a breaking change that has never been marked as such
+(in fact it went unnoticed).
+In order to allow <untar> and
+<tarfileset> to work on platforms who's encoding doesn't match the
+encoding of file names inside the archive, both now support
+encoding attributes.
+The attribute has also been added to <tar> for symmetry.
+Bugzilla Report 57822
+Other changes:
+--------------
+* it is now possible to provide proxy configuration to signjar
+when using the timestamped authority.
+Bugzilla Report 56678
+* complete-ant-cmd.pl now also analyzes the ANT_ARGS environment
+variable.
+Bugzilla Report 57371
+* ported some of the write-optimization of Commons Compress 1.10 to
+the ZIP package
+* adapted unit tests to Java9 and added "javac1.9" as valid option
+for javac's compiler attribute.
+* performance improvements for <intersect>
+Bugzilla Report 57588
+* MailLogger can now add CC and BCC addresses.
+Bugzilla Report 57789.
+* <scp>'s buffer size has been increased from 1k to 100k to match
+<ftp> and <get>.
+github pull requests #8 and #9
+* The tar package can now deal with group and user ids bigger than
+0x80000000.
+https://issues.apache.org/jira/browse/COMPRESS-314
+https://issues.apache.org/jira/browse/COMPRESS-315
+* <scp> has new attributes fileMode and dirMode that control the
+permissions on the remote side when sending data via SSH.
+Bugzilla Report 43271.
+* New <allbutlast> and <allbutfirst> resource collections can be used
+to select all but a given subset of a resource collection.
+Bugzilla Report 57834.

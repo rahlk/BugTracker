@@ -1,0 +1,136 @@
+Release Notes of Apache Ant 1.9.4
+Changes from Ant 1.9.3 TO Ant 1.9.4
+===================================
+Changes that could break older environments:
+-------------------------------------------
+* the prefixValues attribute of <property> didn't work as expected
+when set to false (the default).
+It is quite likely existing build files relied on the wrong
+behavior and expect Ant to resolve the value side against the
+properties defined in the property file itself - these build files
+must now explicitly set the prefixValues attribute to true.
+Bugzilla Report 54769
+* when matching an entry of a zip/tarfileset against a pattern a
+leading slash will be stripped from the entry name.
+Most archives
+don't contain paths with leading slashes anyway.
+This may cause include/exclude patterns that start with a / to stop
+matching anything.
+Such patterns only used to work by accident and
+only on platforms with multiple file system roots.
+Bugzilla Report 53949
+* DirectoryScanner and thus fileset/dirset will now silently drop all
+filesystem objects that are neither files nor directories according
+to java.io.File.
+This prevents Ant from reading named pipes which
+might lead to blocking or other undefined behavior.
+Bugzilla Report 56149
+* BuildFileTest and BaseSelectorTest have both been deprecated in
+favour of BuildFileRule and BaseSelectorRule respectively, and the
+tests that previously extended these base tests have been converted to
+JUnit 4 tests using the new "rule"s. Any external test that sub-classed
+a test in the Ant workspace, rather than BuildFileTest, will need
+changed to either use JUnit4's annotations, or be modified to
+extend BuildFileTest directly. This will not affect any tests that are
+being executed by Ant's junit or batchtest tasks that are not specifically
+testing Ant's code.
+Fixed bugs:
+-----------
+* <import>/<include> failed when the importing file was loaded from an
+URI or a jar and it imported a file from the local file system via
+an absolute path.
+Bugzilla Report 50953
+* <import> could import the same resource twice when imported via
+different resource types.
+Bugzilla Report 55097
+* several calls to File#mkdirs could fall victim to a race condition
+where another thread already created the same directory.
+Bugzilla Report 55290
+* <manifestclasspath> created '/' rather than './' for the parent
+directory of the given jarfile.
+Bugzilla Report 55049
+* <concat>'s fixlastline="true" didn't work when using certain filter
+readers.
+Bugzilla Report 54672
+* several places where resources are read from jars will now
+explicitly disable caching to avoid problems with reloading jars.
+Bugzilla Report 54473
+* AntClassloader will now ignore files that are part of the classpath
+but not zip files when scanning for resources.
+It used to throw an
+exception.
+Bugzilla Report 53964
+* <javadoc> caused a NullPointerException when no destdir was set.
+Bugzilla Report 55949
+* <jar filesetmanifest="mergewithoutmain"> would still include the
+Main section of the fileset manifests if there was no nested
+manifest or manifest attribute.
+Bugzilla Report 54171
+* reading of compiler args has become more defensive
+Bugzilla Report 53754
+* <copy> without force="true" would not only fail to overwrite a
+read-only file as expected but also remove the existing file.
+Bugzilla Report 53095
+* <delete removeNotFollowedSymlinks="true"> would remove symbolic
+links to not-included files.
+It will still delete symlinks to
+directories that would have been followed even if they are not
+explicitly included.
+exclude-Patterns can still be used to
+preserve symbolic links.
+Bugzilla Report 53959
+* Sometimes copy-operations using NIO FileChannels fail.
+Ant will
+now try to use a Stream based copy operation as fallback when the
+Channel based copy fails.
+Bugzilla Reports 53102 and 54397
+* Javadoc.postProcessGeneratedJavadocs() fails for Classes that
+extend Javadoc
+Bugzilla Report 56047
+* TarInputStream will now read archives created by tar
+implementations that encode big numbers by not adding a trailing
+NUL.
+* the isExists() method of URLResource returned false positives for
+HTTP and FTP URLs.
+Other changes:
+--------------
+* initial support for Java 1.9
+* <sshexec> can optionally pass System.in to the remote process
+Bugzilla Report 55393
+* <sshexec> now supports capturing error output of the executed
+process and setting a property from the return code.
+Bugzilla Report 48478
+* <javadoc> now has an option to fail if javadoc issues warnings.
+Bugzilla Report 55015
+* <sql> has a new outputencoding attribute.
+Bugzilla Report 39541
+* changes to JUnitTestRunner and PlainJUnitResultFormatter to make
+OutOfMemoryErrors less likely.
+Bugzilla Report 45536
+* changes to DOMElementWriter to make OutOfMemoryErrors less likely.
+Bugzilla Report 54147
+* <redirector> has a new attribute binaryOutput that prevents Ant
+from splitting the output into lines.
+This prevents binary output
+from being corrupted but may lead to error and normal output being
+mixed up.
+Bugzilla Report 55667
+Bugzilla Report 56156
+* the nested <message> elements of <mail> now have an optional
+inputEncoding attribute that can be used to specify the encoding of
+files read that don't use the platform's default encoding.
+Bugzilla Report 56258
+* The <get> task now explicitly accepts and supports the gzip content encoding.
+Bugzilla Report 49453
+* A new resourcecollection type <multirootfileset> acts like a union
+of <fileset>s and <dirset>s that share the same configuration but
+have different base directories.
+Bugzilla Report 48621
+* <get> has a quiet attribute that makes the task log errors only
+when enabled.
+GitHub Pull Request #1
+* <junit> has now a threads attribute allowing to run the tests in several threads.
+Bugzilla Report 55925
+* addition of a new ProcessUtil class providing the process id of the current process
+* changes to allow to run the JUnit testcases of Ant in parallel,
+by making them use unique temporary directories

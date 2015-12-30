@@ -1,0 +1,32 @@
+Changes from Ant 1.9.0 TO Ant 1.9.1
+===================================
+Changes that could break older environments:
+-------------------------------------------
+* Users who have their own ProjectHelper implementation will need to change it because the import and include tasks
+will now default the targetPrefix to ProjectHelper.USE_PROJECT_NAME_AS_TARGET_PREFIX.
+Users using the default ProjectHelper2 with ant need not worry about this change done to fix Bugzilla Report 54940.
+Fixed bugs:
+-----------
+* Corrected XSLTC error in <junitreport>.
+Bugzilla Report 54641.
+* Provide more control over Zip64 extensions created by <zip> and
+related tasks.
+In particular no Zip64 extensions will be used at
+all by the <jar> task family by default - this is required for jars
+to be readably by Java5.
+Bugzilla Report 54762.
+* Fixed loading of external dependencies in JUnit task.
+Bugzilla Report 54835.
+* Target rewriting for nested "include" only works when "as" is specified.
+See also "Changes that could break older environments"
+Bugzilla Report 54940.
+Other changes:
+--------------
+* strict attribute added to <signjar>.
+Bugzilla Report 54889.
+* simplifying Execute.getEnvironmentVariables since we are only running on Java 1.5 or higher now
+* Add conditional attributes
+Bugzilla report 43362
+* Recommending to upgrade jsch to 0.1.50, particularly if you are using Java 1.7.
+jsch is the library behind the sshexec and scp Ant tasks.
+Versions of jsch older than 0.1.50 fail randomly under Java 1.7 with an error message "verify: false"

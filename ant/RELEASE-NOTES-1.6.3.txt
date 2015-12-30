@@ -1,0 +1,225 @@
+Ant 1.6.3 release notes
+Changes from Ant 1.6.2 to Ant 1.6.3
+Changes that could break older environments:
+The subant task used the canonical version of a file path. This
+has been changed to use the absolute path. Bugzilla 30438.
+Tar now writes two EOF blocks rather than one.
+Bugzilla report 28776
+The Reference object now has a project field which it uses in preference
+to the project passed in. This allows composite references to be
+handled to nested projects.
+Bugzilla report 25777
+<junit> with filtertrace="true" will now also swallow lines for the
+sun.reflect package.
+If you need to see them in your stack trace,
+you must set filtertrace to false.
+Bugzilla Report 22758
+The jikes compiler adapter now supports -bootclasspath, -extdirs and
+-sourcepath and also uses the same logic for debug flags as javac.
+This means, the jikes compiler adapter now requires Jikes 1.15 or later.
+Bugzilla Reports 25868, 26404 and 32609.
+Targets with identical name work in imported project. Bugzilla Report 34566.
+The gcj compiler adapter used to include the Java runtime classes
+even if includeJavaRuntime was set to false, unless the
+bootclasspath has been specified as well.
+It will now always adhere
+to includeJavaRuntime, you may need to set it to true explicitly now
+if you relied on the old behavior.
+Other changes:
+<javadoc> can now take an attribute 'executable'. Bugzilla report 30606.
+New attribute ignorecontents for <different> selector
+Javadoc fixes for Location, Project, and RuntimeConfigurable
+Bugzilla 30160.
+Enable to choose the regexp implementation without system property.
+Bugzilla Report 15390.
+Expose objects and methods in IntrospectionHelper. Bugzilla Report 30794.
+Allow file attribute of <move> to rename a directory.
+Bugzilla Report 22863.
+Add xmlcatalog nested element to XmlProperty. Bugzilla report 27053.
+New attribute alwayslog for <redirector> type.
+Added <target> nested elements to <ant> and <antcall> to allow
+specification of multiple sub-build targets, which are executed
+with a single dependency analysis.
+Refactored Target invocation into org.apache.tools.ant.Executor
+implementations.
+Bugzilla Reports 21421, 29248.
+<rmic> now also supports Kaffe's rmic version shipping with Kaffe
+1.1.2 and above.
+added casesensitive attribute to <globmapper> and <regexpmapper>
+Bugzilla report 16686
+added handledirsep attribute to <globmapper> and <regexpmapper>
+Bugzilla report 32487
+added a new mapper <filtermapper>
+When a BuildListener tried to access System.err or System.out, Ant
+would have thrown an exception - this has been changed.
+Ant now
+silently ignores the message.
+BuildListeners still should avoid
+accessing either stream.
+Added a comment attribute to the zip task.
+Bugzilla report 22793.
+Overloaded FileUtils.createNewFile with a boolean mkdirs attribute
+to create nonexistent parent directories.
+<apply> has a new "force" attribute that, when true, disables
+checking of target files.
+Made the dest attribute of the apply task optional; mapped target
+filenames will be interpreted as absolute pathnames when dest is omitted.
+Changed default tempdir for <javac> from user.dir to java.io.tmpdir.
+Added searchpath attribute to <exec> for searching path variable(s)
+when resolveexecutable = true.
+Added revision and userid attributes to <pvcs> documentation.
+Added support to the touch task for a mkdirs attribute to create
+nonexistent parent directories before touching new files.
+Added support to the touch task for a pattern attribute to allow
+alternate datetime formats.
+Added support to the touch task to map touched files using a nested
+mapper element.
+Added support to the touch task for a verbose attribute to suppress
+logging of new file creation.
+bad link in docs to the enhancement page in bugzilla.
+Bugzilla report 33252.
+Added length task to get strings' and files' lengths.
+<native2ascii> and <javah> now also support Kaffe's versions.
+Recursive token expansion in a filterset can now be disabled by
+setting its recurse attribute to false.
+Pathconvert no longer requires that one of (targetos|pathsep|dirsep)
+be set; platform defaults are used when this is the case.
+Added preservelastmodified attribute to fixcrlf task. Bugzilla 25770.
+Added isfileselected condition.
+Added verbose="true|false" attribute to <subant>. When verbose is enabled,
+the directory name is logged on entry and exit of the sub-build. Bugzilla 33787.
+Added -nouserlib option to allow running ant without automatically loading
+up ${user.home}/.lib/ant. This is useful when compiling ant, and antlibs.
+Modified the build.sh and build.bat to use the option.
+Added -noclasspath option to allow running ant WITHOUT using CLASSPATH env
+variable. Modified ant.bat to do this so that %CLASSPATH% is not looked at.
+Add else attribute to the condition task, which specifies an
+optional alternate value to set the property to if the nested
+condition evaluates to false. Bugzilla report 33074.
+Ant generated jar files should now be detected as jar files by
+Solaris.
+Bugzilla Report 32649.
+Added two tutorials
+beginner: introduction into Ant
+task developers: using path, fileset etc
+<rpm> has new attributes failonerror and quiet.
+Fixed bugs:
+Do not pass on ThreadDeath when halting <java fork="false">. Bugzilla
+32941.
+Killing a thread running <java fork="true"> (e.g. from an IDE) would
+not stop the forked process. Bugzilla 31928.
+Programs run with <java fork="true"> can now accept standard input
+from the Ant console.
+(Programs run with <java fork="false"> could
+already do so.)
+Bugzilla 24918.
+AbstractCvsTask prematurely closed its outputStream and errorStream.
+Bugzilla 30097.
+Impossible to use implicit classpath for <taskdef>
+when Ant core loader != Java application loader and
+Path.systemClassPath taken from ${java.class.path} Bugzilla 30161.
+MacroInstance did not clean up nested elements correctly in the execute
+method, causing multiple use of the same macro instance with nested
+elements to fail.
+checksum fileext property doc wrong. Bugzilla 30787.
+FTP task, getTimeDiff method was returning wrong value. Bugzilla 30595.
+Zip task was not zipping when only empty directories were found.
+Bugzilla 30365.
+Jar task was not including manifest files when duplicate="preserve" was
+chosen. Bugzilla 32802.
+Classpath was treated in the same way as -lib options. Bugzilla 28046.
+Manual page for cvsversion contained incorrect attributes and did not
+say since 1.6.1. Bugzilla 31408.
+Typo in definition of <cvsversion> task causing it not to be defined.
+Bugzilla 31403.
+Execution of top level tasks in imported files get delayed by targets.
+Bugzilla report 31487.
+ExecTask executes checkConfiguration() even though os does not match.
+Bugzilla report 31805.
+Concat task instance could not be run twice.
+Bugzilla report 31814.
+NPE using XmlLogger and antlib.
+Bugzilla report 31840.
+Properties.propertyNames() should be used instead of .keys().
+Bugzilla report 27261.
+Target location is not set for default target.
+Bugzilla report 32267.
+Incorrect classloader parent in junittask when using with
+ant-junit.jar and junit.jar not in the project classloader. Bugzilla
+report 28474.
+getResources() on the classloader returned by ClasspathUtils would
+see each resource twice - if the resource is in the project
+classpath and if the classloader is requested with a null path.
+XMLValidate used URL#getFile rather than the ant method FileUtils#fromURI
+Bugzilla report 32508
+fixed Regexp-Mapper docs which gave outdated instructions (optional.jar)
+Bugzilla report 28584
+<scp> using <fileset> didn't work with OpenSSH 3.9 and later.
+Bugzilla report 31939
+<setproxy> failed to set user/password on some JDKs.
+Bugzilla report 32667
+untar would go into infinite loop for some invalid tar files.
+Bugzilla report 29877
+forked <javac> won't pass -source to a JDK 1.1 or 1.2 javac anymore.
+Bugzilla report 32948
+propertyset references did not handle nested propertyset references.
+oata.types.Description.getDescription(Project) would throw a
+NullPointerException when the "ant.targets" reference was unset.
+Wrapper scripts did not detect WINNT value of dynamic OS environment
+variable when logged into workstations using Novell authentication.
+Bugzilla Report 30366.
+DependScanner.getResource() always returned nonexistent resources,
+even when the resource actually existed.
+Bugzilla Report 30558.
+<apply> was broken with classfilesets.
+Bugzilla Report 30567.
+<available> returned false positives when checking a file
+passed in with the current basedir leading twice:
+e.g. ${basedir}${file.separator}${basedir}${file.separator}foo .
+The first file open that took place when using input files with the
+<exec>, <apply>, or <java> tasks was always logged to System.out
+instead of to the managing Task.
+<telnet> and <rexec> would try to disconnect from servers they never
+connetced to, potentially leading to exceptions in commons-net.
+Bugzilla Report 33618.
+<zip> would drop files matched by defaultexcludes during updates.
+Bugzilla Report 33412.
+<zip> couldn't store files with size between 2GB and 4GB (the
+upper limit set by the ZIP format itself).
+Bugzilla Report 33310.
+NPE when when <presetdef> tries to configure a task that
+cannot be instantiated. Bugzilla Report 33689.
+<javac debug="false"> created an invalid command line when running
+the Symantec Java compiler.
+Get with usetimestamp did not work on Java 1.2.
+Get with usetimestamp did not work when local timestamp roughly >= now.
+The framed JUnit report now handles multiple reports for the same
+testcase properly.
+Bugzilla Report 32745.
+<cab> didn't work for files with spaces in their names on Windows.
+Bugzilla Report 17182.
+The VAJ tasks could fail if the project name contained characters
+that need to get URL encoded.
+Bugzilla Report 23322.
+The FTP task could crash with an ArrayIndexOutOfBoundsException
+Bugzilla Report 28797
+Improved handling of paths on cygwin
+Bugzilla Report 31245
+TarInputStream#read() wasn't implemented correctly.
+Bugzilla Report
+34097.
+<xslt> failed to process file-hierarchies of more than one level if
+scanincludeddirectories was true.
+Bugzilla Report 24866.
+forkmode="perBatch" or "once" would ignore extension attributes that
+had been specified for <formatter>s.
+Bugzilla Report 32973.
+minor performance update of Locator.fromUri. Bugzilla Report 34529.
+The refid attribute of the I/O redirector was not functional.
+SQL task would try access result sets of statements that didn't
+return any, causing problems with Informix IDS 9.2 and IBM DB2 8.1
+FixPak 6 (or later). Bugzilla Reports 27162 and 29954.
+make sure that Zip and its derivates call the createEmptyZip method when
+there are no resources to zip/jar/...
+ant.bat was missing runAntNoClasspath label for goto.
+Bugzilla 34510.

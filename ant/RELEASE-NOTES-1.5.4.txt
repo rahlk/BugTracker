@@ -1,0 +1,61 @@
+Ant 1.5.4
+This is the 1.5.4 version of Ant. It is available in both
+binary and source distributions.
+JDK 1.1 Users:
+Please note that the next major release of Ant, Ant 1.6, will require JDK 1.2 or
+later. This release, Ant 1.5.4, will be the last Ant release from the Ant 1.5
+codebase, barring any major bugs. As such, it is likely to be the last
+release of Ant that will be JDK 1.1 compatible. Ant 1.6, of course, retains the
+ability to generate 1.1 compatible code.
+Note:
+The tar files in the distribution use GNU tar extensions
+and must be untarred with a GNU compatible version of tar. The version
+of tar on Solaris and Mac OS X will not work with these files
+Changes
+The changes from Release 1.5.3 to this release are detailed below.
+Please refer to the WHATSNEW file for more information.
+Thank you for using Ant.
+The Apache Ant Projecthttp://ant.apache.org/
+PGP Signatures
+Many of the distribution kits have been digitally signed (using
+PGP).
+If so, there will be an accompanying
+distribution.asc file in the same directory as
+the distribution.
+The PGP keys can be found in the distribution
+directory at <http://www.apache.org/dist/ant/KEYS>.
+Always test available signatures, e.g.,
+> pgpk -a KEYS
+> pgpv apache-ant-1.5.4-bin.tar.gz.asc
+or,
+> pgp -ka KEYS
+> pgp apache-ant-1.5.4-bin.tar.gz.asc
+or,
+> gpg --import KEYS
+> gpg --verify apache-ant-1.5.4-bin.tar.gz.asc
+Changes from Ant 1.5.3 to Ant 1.5.4
+Changes that could break older environments:
+If the Visual Age tasks used to work for you, they may stop doing so
+now - and we'd like to know about it.
+The current set of tasks is
+supposed to work with any version of VAJ starting with 3.0.
+Fixed bugs:
+The Visual Age for Java tasks didn't work (at least for versions 3.0
+and higher).
+Bugzilla Report 10016.
+URL-encoding in <vaj*port> didn't work properly.
+VAJRemoteUtil called getAbsolutePath instead of getPath
+causing problems when using a Windows VAJ server from a UNIX server.
+Bugzilla Report 20457.
+VAJImport task failed with NullPointerException when using DirectoryScanner.
+Bugzilla Report 22080.
+Other Changes:
+Shipped XML parser is now Xerces 2.5.0
+<javah> will invoke oldjavah on JDK 1.4.2.
+Bugzilla Report 18667.
+The VAJ tasks now support a haltonfailure attribute to conditionally
+keep building even if they fail.
+It is now possible to use the latest (versioned or unversioned) edition
+in <vajload> by using special wildcard characters.
+Also fixes
+Bugzilla Report 2236.
